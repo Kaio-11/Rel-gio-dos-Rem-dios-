@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hora do Remédio</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EBF5FB;--fg:#1A252C;--mut:#46535E;--card:#FFFFFF;--soft:#D3E2EC;--line:#7F93A1;--acc:#1B4F72;--on:#FFFFFF;--ok:#145C37;--okb:#E8F5E9;--bad:#8F241A;--badb:#FDECEA;--or:#8A3600;--orb:#FFF3E0;--gry:#F2F4F4;--wb:#FFF3E0;--m:#FFF3E0;--a:#E8F5E9;--t:#FDEBD0;--n:#E3ECF7;--go:#145C37;--goon:#FFFFFF;--ob:#A84300;--obon:#FFFFFF;--focus:#0057D9;
+--shadow-card:0 4px 6px -1px rgba(0,0,0,.10),0 2px 4px -2px rgba(0,0,0,.10);--shadow-soft:0 2px 8px rgba(0,0,0,.06);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A21;--fg:#EAF2F6;--mut:#B4C4CE;--card:#17252E;--soft:#2A3D49;--line:#7C909D;--acc:#8EC5EA;--on:#08202E;--ok:#74D6A0;--okb:#143324;--bad:#FF9A90;--badb:#3B1E1B;--or:#FFB06B;--orb:#3A2A14;--gry:#1E2B33;--wb:#3A2A14;--m:#3A2A14;--a:#143324;--t:#40291A;--n:#1D2A45;--go:#74D6A0;--goon:#06210F;--ob:#FFB06B;--obon:#2A1500;--focus:#FFD60A}}
+:root[data-theme="dark"]{--bg:#0F1A21;--fg:#EAF2F6;--mut:#B4C4CE;--card:#17252E;--soft:#2A3D49;--line:#7C909D;--acc:#8EC5EA;--on:#08202E;--ok:#74D6A0;--okb:#143324;--bad:#FF9A90;--badb:#3B1E1B;--or:#FFB06B;--orb:#3A2A14;--gry:#1E2B33;--wb:#3A2A14;--m:#3A2A14;--a:#143324;--t:#40291A;--n:#1D2A45;--go:#74D6A0;--goon:#06210F;--ob:#FFB06B;--obon:#2A1500;--focus:#FFD60A}
+:root[data-theme="hc"]{--bg:#000;--fg:#FFF;--mut:#FFF;--card:#000;--soft:#FFF;--line:#FFF;--acc:#FFE600;--on:#000;--ok:#7CFF9B;--okb:#000;--bad:#FF8F8F;--badb:#000;--or:#FFB86B;--orb:#000;--gry:#000;--wb:#000;--m:#000;--a:#000;--t:#000;--n:#000;--go:#7CFF9B;--goon:#000;--ob:#FFB86B;--obon:#000;--focus:#FFE600}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
+*{box-sizing:border-box}
+body{margin:0;min-width:320px;background:var(--bg);color:var(--fg);font-family:"Atkinson Hyperlegible",Verdana,"Segoe UI",sans-serif;font-size:var(--fs,24px);line-height:1.5}
+.simple body{font-family:Verdana,Arial,sans-serif}
+.sp body{line-height:1.9;letter-spacing:.04em;word-spacing:.12em}
+.nomo *{transition:none!important;animation:none!important}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+.skip{position:absolute;left:-999px;top:0;background:var(--acc);color:var(--on);padding:12px 18px;border-radius:999px;z-index:60}
+.skip:focus{left:12px}
+header,main{max-width:1160px;margin:0 auto;padding-left:24px;padding-right:24px}
+header{padding-top:20px;padding-bottom:8px}
+h1{font-size:1.3em;line-height:1.15;margin:0}h2{font-size:1.2em;line-height:1.25;margin:0 0 12px}h3{font-size:1.05em;line-height:1.3;margin:0 0 6px}
+p{margin:0 0 12px;max-width:72ch}
+.note{color:var(--mut);font-size:max(.88em,18px)}
+.box,.row,.grow,p,li,label,button,summary,.note{min-width:0;overflow-wrap:normal;word-break:normal;hyphens:none}
+button,.btn{font:inherit;min-height:64px;padding:10px 24px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;font-weight:700;text-align:center;line-height:1.25;white-space:normal;box-shadow:var(--shadow-soft);transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
+.big button,.big .btn{min-height:72px;font-size:1.05em}
+button:hover,.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-card);border-color:var(--acc)}
+button.pri,button[aria-current=page],.chips button[aria-pressed=true],.seg2 button[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:var(--on)}
+button.go{background:var(--go);border-color:var(--go);color:var(--goon);min-height:80px;font-size:calc(var(--fs)*1.33);font-weight:700}
+button.orb{background:var(--ob);border-color:var(--ob);color:var(--obon);min-height:70px;font-size:var(--fs)}
+button.bad{border-color:var(--bad);color:var(--bad);background:var(--card)}
+button.sm{min-height:56px;padding:8px 18px;font-size:.9em}
+.em{background:#A52A1E;border-color:#A52A1E;color:#fff}.em:hover{background:#861F15;border-color:#861F15}
+:root[data-theme="hc"] .em{border-color:#fff}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible,.btn:focus-visible,a:focus-visible{outline:6px solid var(--focus);outline-offset:3px}
+nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;background:var(--card);border:2px solid var(--soft);border-radius:28px;padding:10px;box-shadow:var(--shadow-card)}
+nav button{width:100%;min-width:0;min-height:64px;margin:0;padding:8px 12px;font-size:.95em}
+main{padding-top:20px;padding-bottom:130px}
+.panel{display:none}.panel.show{display:block}
+.box{background:var(--card);border:2px solid var(--soft);border-radius:24px;padding:20px 22px;margin-bottom:16px;box-shadow:var(--shadow-card)}
+.hero{background:var(--orb);border:3px solid var(--or)}
+.hero.late{background:var(--badb);border-color:var(--bad)}
+.hero .tm{font-size:calc(var(--fs)*1.9)}
+.hero h2{font-size:calc(var(--fs)*1.67);line-height:1.2;font-weight:700;margin:0}
+.hero .grow p{font-size:calc(var(--fs)*1.17);margin:4px 0 0}
+.hero .ph{width:160px;height:160px;border-radius:28px;font-size:4.4em}
+.hero .acts{margin-top:16px;gap:12px}.hero .acts .go{flex:2 1 260px}.hero .acts .orb{flex:1 1 200px}
+.eyebrow{font-weight:700;letter-spacing:.04em;color:var(--or);margin:0 0 6px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.row.sp2{justify-content:space-between}
+.ph{width:84px;height:84px;border-radius:20px;object-fit:cover;border:2px solid var(--soft);background:var(--card);display:flex;align-items:center;justify-content:center;font-size:2.2em;flex:none}
+.tm{font-size:1.9em;font-weight:700;font-variant-numeric:tabular-nums}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:999px;border:2px solid;font-weight:700;font-size:max(.82em,18px);line-height:1.25;white-space:normal}
+.tag.ok{color:var(--ok);border-color:var(--ok);background:var(--okb)}.tag.late{color:var(--bad);border-color:var(--bad);background:var(--badb)}.tag.wait{color:var(--mut);border-color:var(--line);background:var(--gry)}
+.grow{flex:1;min-width:0}
+.date-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.date-fields>div{min-width:0}
+label{display:block;font-weight:700;margin:12px 0 5px}
+input,select,textarea{font:inherit;min-height:64px;width:100%;max-width:100%;padding:10px 20px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--fg);line-height:1.25}
+input[type=text],input[type=number],input[type=password],input[type=date],input[type=tel]{white-space:nowrap;overflow-x:auto;text-overflow:clip}
+input[type=time]{width:auto;min-width:140px}
+input[type=file]{padding:12px 16px;font-size:.85em}
+input[type=range]{width:100%;height:40px;padding:0;border:0;border-radius:0;accent-color:var(--acc);background:transparent}
+input[type=checkbox]{width:32px;height:32px;min-height:32px;padding:0;border-radius:8px;accent-color:var(--acc);flex:none}
+.chk{display:flex;gap:12px;align-items:center;font-weight:400;margin:10px 0;cursor:pointer}
+fieldset{border:2px solid var(--soft);border-radius:22px;margin:16px 0;padding:8px 16px;background:var(--card)}
+legend{font-weight:700;padding:0 8px}
+.days{display:flex;flex-wrap:wrap;gap:6px 16px}
+.err{background:var(--badb);border:2px solid var(--bad);border-radius:20px;padding:14px 18px;margin:12px 0}
+.warn{background:var(--wb);border:2px solid var(--or);border-radius:20px;padding:14px 18px;margin:12px 0}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:12px}
+.brand{display:flex;align-items:center;gap:12px;color:var(--acc)}.brand h1{color:var(--acc)}.brand small{display:block;color:var(--mut);font-size:max(.75em,18px)}
+.who{display:flex;align-items:center;gap:14px}.hi{font-weight:700;font-size:calc(var(--fs)*1.17);line-height:1.25;text-align:right}.hi small{font-weight:400;color:var(--mut);font-size:max(.7em,18px)}
+.av{width:80px;height:80px;border-radius:50%;border:3px solid var(--acc);background:var(--card);display:flex;align-items:center;justify-content:center;font-size:2.4em;overflow:hidden;flex:none}.av img{width:100%;height:100%;object-fit:cover}
+.clk{display:flex;align-items:center;gap:12px;background:var(--card);border:2px solid var(--soft);border-radius:24px;padding:8px 16px;box-shadow:var(--shadow-soft)}
+.clk .ana{width:84px;height:84px;flex:none}
+.clk b{display:block;font-size:min(calc(var(--fs)*3),18vw);font-weight:700;letter-spacing:2px;line-height:1;color:var(--acc);font-variant-numeric:tabular-nums}
+.clk small{display:block;font-size:max(.83em,18px);color:var(--mut);text-transform:capitalize}
+.hgrid{display:block}
+.hgrid details>summary{font-size:1.2em}
+.tl{position:relative;margin:0 0 12px 14px;padding-left:22px;border-left:4px solid var(--line)}
+.tl::before{content:"";position:absolute;left:-13px;top:22px;width:22px;height:22px;border-radius:50%;background:var(--card);border:4px solid var(--line)}
+.tl.ok::before{border-color:var(--ok);background:var(--ok)}.tl.late::before{border-color:var(--bad)}.tl.nx::before{border-color:var(--or);background:var(--or)}
+.tlc{background:var(--gry);color:var(--mut);border:2px solid var(--soft);border-radius:20px;padding:12px 16px}
+.tlc h3{color:inherit;font-size:1em}.tlc .tm{color:inherit}
+.tl.ok .tlc{background:var(--okb);color:var(--ok);border-color:var(--ok)}.tl.ok .tlc .note{color:var(--ok)}
+.tl.late .tlc{background:var(--badb);color:var(--bad);border-color:var(--bad)}.tl.late .tlc .note{color:var(--bad)}
+.tl.nx .tlc{background:var(--orb);color:var(--fg);border:3px solid var(--or);animation:bp 2s infinite}.tl.nx .tlc .note{color:var(--mut)}
+@keyframes bp{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--or) 25%,transparent)}}
+.pill{display:inline-block;border:3px solid var(--or);border-radius:999px;padding:8px 22px;font-weight:700;margin:4px 0 12px 14px;background:var(--orb)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}.chips button{min-height:64px;padding:8px 18px}
+.seg2{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}.seg2 button{flex:1;min-width:120px}
+.step{border:2px solid var(--soft);border-radius:24px;padding:14px 20px;margin-bottom:16px;background:var(--card);box-shadow:var(--shadow-card)}
+.step h3{display:flex;gap:10px;align-items:center}.step h3 span{background:var(--acc);color:var(--on);border-radius:50%;width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;font-size:.9em;flex:none}
+.bar2{height:20px;border-radius:10px;background:var(--soft);overflow:hidden;margin:8px 0}.bar2 i{display:block;height:100%;background:var(--ok)}.bar2.low i{background:var(--bad)}
+.big2{font-size:2em;font-weight:700;line-height:1.1}
+.hist{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin:8px 0;max-width:560px}.hist div{border:2px solid var(--soft);border-radius:12px;min-height:56px;text-align:center;padding:2px;font-size:max(.8em,18px);background:var(--card)}.hist .h{border:0;background:none;font-weight:700;min-height:0}
+.hist .g{background:var(--okb);border-color:var(--ok);color:var(--ok)}.hist .y{background:var(--orb);border-color:var(--or)}.hist .r{background:var(--badb);border-color:var(--bad);color:var(--bad)}.hist .t{outline:4px solid var(--focus);outline-offset:1px}
+.ok-card{text-align:center;background:var(--okb);border:3px solid var(--ok)}.stars{font-size:2.6em;letter-spacing:6px}.party .stars{animation:pu .6s 4}
+.pulse{animation:pu 1.2s infinite}@keyframes pu{50%{transform:scale(1.03)}}
+#al,#pd,#em{position:fixed;inset:0;display:none;overflow:auto;padding:max(20px,env(safe-area-inset-top)) 20px 20px}
+#al{z-index:40;background:var(--bg)}#pd{z-index:45;background:var(--bg)}#em{z-index:46;background:#A52A1E;color:#fff}
+#al.on,#pd.on,#em.on{display:block}
+#al .in{max-width:640px;margin:0 auto;text-align:center;background:var(--orb);border:3px solid var(--or);padding:28px;border-radius:28px;box-shadow:var(--shadow-card)}
+#al .ph{width:min(60vw,240px);height:min(60vw,240px);margin:12px auto}
+#al h2{font-size:calc(var(--fs)*1.67)}
+#al .acts{display:grid;gap:12px;margin-top:20px}#al .acts button{width:100%}
+#pd .in{max-width:520px;margin:0 auto;background:var(--card);padding:24px;border-radius:28px;box-shadow:var(--shadow-card)}
+#em .in{max-width:520px;margin:0 auto;text-align:center}
+#em .ct{background:#fff;color:#111;border-radius:24px;padding:16px;margin:14px 0}
+#em .call{display:block;background:#17653B;color:#fff;border-radius:999px;padding:18px;font-weight:700;text-decoration:none;font-size:1.2em;margin-top:10px}
+#em .call:focus-visible,#emx:focus-visible{outline:6px solid #FFD60A;outline-offset:3px}
+#embar{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px 16px max(10px,env(safe-area-inset-bottom));background:var(--bg);border-top:2px solid var(--soft)}
+#embar button{display:block;width:100%;max-width:1160px;margin:0 auto;font-size:calc(var(--fs)*1.1);min-height:72px}
+.disc{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.q{padding:18px;border:2px solid var(--soft);border-radius:24px;min-height:160px;box-shadow:var(--shadow-soft)}
+.q.m{background:var(--m)}.q.a{background:var(--a)}.q.t{background:var(--t)}.q.n{background:var(--n)}
+.q h3{margin-bottom:10px}
+.it{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px dashed var(--line);min-width:0}
+.it>div{min-width:0}.it .ph{width:64px;height:64px;font-size:1.6em}.it b.t{font-size:1.25em;font-variant-numeric:tabular-nums}
+details{background:var(--card);border:2px solid var(--soft);border-radius:22px;padding:8px 18px;margin-bottom:14px;box-shadow:var(--shadow-soft)}
+summary{font-weight:700;cursor:pointer;min-height:56px;display:flex;align-items:center}
+details[open] summary{margin-bottom:8px}
+.ms [data-tab]:not([data-tab="hoje"]),.ms #ativ .note,.ms #adh,.ms #imp{display:none}
+#sair{display:none;margin-top:16px}.ms #sair{display:block}
+:root[data-theme="hc"] .box,:root[data-theme="hc"] nav,:root[data-theme="hc"] details,:root[data-theme="hc"] fieldset,:root[data-theme="hc"] .q,:root[data-theme="hc"] .step{border:2px solid var(--line)}
+@media (min-width:1024px){.hgrid{display:grid;grid-template-columns:3fr 2fr;gap:24px;align-items:start}}
+@media (max-width:768px){.top{flex-direction:column;align-items:flex-start}.hi{text-align:left}.clk b{font-size:min(calc(var(--fs)*2),16vw)}.clk .ana{width:64px;height:64px}.hero .acts button,.go,.orb{width:100%}}
+@media (max-width:760px){header,main{padding-left:18px;padding-right:18px}nav{grid-template-columns:repeat(2,minmax(0,1fr))}.box{padding:18px}}
+@media (max-width:560px){.disc{grid-template-columns:1fr}.date-fields{grid-template-columns:1fr}.hero .ph{width:120px;height:120px}}
+@media (max-width:380px){header,main{padding-left:12px;padding-right:12px}nav{grid-template-columns:1fr}.box{padding:16px}.row{gap:10px}.it .ph{width:52px;height:52px}}
+@media print{
+body{background:#fff;color:#000;font-size:16pt}
+header,nav,.skip,.noprint,#al,#live,#embar,#em,#pd{display:none!important}
+.panel{display:none!important}#pr{display:block!important}
+main{max-width:none;padding:0}
+.box,#sheet{box-shadow:none!important;border:1px solid #777;border-radius:16px}
+.q{background:#fff!important;color:#000;border:2px solid #000;border-radius:18px!important;break-inside:avoid}
+.it{border-top:1px dashed #000}.ph{border-color:#000}
+#sheet.xl{font-size:20pt}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Pular para o conteúdo</a>
+<div id="live" role="status" aria-live="polite" style="position:absolute;left:-999px"></div>
+
+<div id="pd" role="dialog" aria-modal="true" aria-labelledby="pdt"><div class="in"><h2 id="pdt"></h2><p id="pdm"></p><div id="pw"><label for="pi">PIN</label><input type="password" id="pi" inputmode="numeric" autocomplete="off"></div><div class="err" id="pe" role="alert" hidden></div><div class="row" style="margin-top:12px"><button class="pri" id="pok">Confirmar</button><button id="pcn">Cancelar</button><button class="sm" id="pfg">Esqueci o PIN</button></div></div></div>
+<div id="em" role="dialog" aria-modal="true" aria-labelledby="emt"><div class="in"><h2 id="emt" style="font-size:1.8em">🚨 Emergência</h2><p>Toque no botão verde para ligar.</p><div id="eml"></div><button id="emx" style="color:#fff;border-color:#fff;margin-top:8px">Voltar</button></div></div>
+<div id="al" role="alertdialog" aria-modal="true" aria-labelledby="alt"><div class="in">
+<p class="tm" id="alh"></p><h2 id="alt">Hora do remédio</h2>
+<div id="alph"></div><h2 id="aln"></h2><p id="ald"></p>
+<div class="acts"><button class="go pulse" id="alok">✅ Já tomei!</button><button class="orb" id="alsn">⏰ Adiar 10 minutos</button></div>
+</div></div>
+
+<header>
+<div class="top">
+<div class="brand"><svg width="48" height="48" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="24" r="15" fill="none" stroke="currentColor" stroke-width="3"/><path d="M22 15v9l6 3" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M8 9l-3 3M36 9l3 3" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg><div><h1>Hora do Remédio</h1><small>Relógio dos Remédios · hora de cuidar de você</small></div></div>
+<div class="who"><div class="hi" id="hi"></div><div class="av" id="av" aria-hidden="true">🙂</div></div>
+<div class="clk"><svg class="ana" id="ana" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--card)" stroke="var(--acc)" stroke-width="5"/><path d="M50 9v7M50 84v7M9 50h7M84 50h7" stroke="var(--fg)" stroke-width="3" stroke-linecap="round"/><line id="ah" x1="50" y1="50" x2="50" y2="29" stroke="var(--fg)" stroke-width="6" stroke-linecap="round"/><line id="am" x1="50" y1="50" x2="50" y2="17" stroke="var(--acc)" stroke-width="4" stroke-linecap="round"/><line id="as" x1="50" y1="54" x2="50" y2="14" stroke="var(--bad)" stroke-width="2" stroke-linecap="round"/><circle cx="50" cy="50" r="4" fill="var(--fg)"/></svg><div><b id="ck">00:00</b><small id="cd2"></small></div></div>
+</div>
+<div class="row" style="margin:0 0 8px"><button class="sm" data-tab="ac">⚙ Acessibilidade e tamanho da letra</button></div>
+<nav aria-label="Seções">
+<button data-tab="hoje" aria-current="page">Meus medicamentos</button>
+<button data-tab="ag">Agenda</button>
+<button data-tab="es">Estoque</button>
+<button data-tab="rem">Cuidador</button>
+<button data-tab="cu">Guia</button>
+<button data-tab="pf" class="sm">Profissional</button>
+</nav>
+</header>
+<main id="main" tabindex="-1">
+<div class="warn" id="warn" hidden>Não foi possível salvar neste navegador. Libere espaço ou use outra janela, senão os dados serão perdidos.</div>
+
+<section class="panel show" id="hoje" aria-label="Meus medicamentos">
+<div class="box" id="ativ">
+<p><b id="ast">Para o alarme tocar e a tela não apagar, toque no botão.</b></p>
+<div class="row"><button class="pri" id="act">🔔 Ativar alarmes</button><button id="tst">Testar alarme</button></div>
+<p class="note" style="margin-top:10px">Os alarmes só funcionam com esta página aberta e o aparelho com som ligado. Para tocar com o app fechado, use Agenda, Salvar lembretes na agenda do celular.</p>
+</div>
+<div class="hgrid">
+<div class="hl"><div id="hero"></div><div class="row" style="margin-bottom:16px"><button id="rdall">🔊 Ouvir os remédios de hoje</button></div></div>
+<div class="hr"><details id="tld" open><summary>Agenda de hoje</summary>
+<div class="chips" id="tfl" role="group" aria-label="Filtrar por turno"><button data-tf="all" aria-pressed="true">Todos</button><button data-tf="m" aria-pressed="false">Manhã</button><button data-tf="t" aria-pressed="false">Tarde</button><button data-tf="n" aria-pressed="false">Noite</button></div>
+<div id="lst"></div></details>
+<div class="box" id="adh"></div></div>
+</div>
+<button id="sair" class="sm">Sou cuidador: sair do modo simples</button>
+</section>
+
+<section class="panel" id="ag" aria-label="Agenda e lembretes"><h2>Agenda e lembretes</h2>
+<div class="box" id="ags"></div>
+<div class="box"><h3>Alarme no celular, mesmo com o app fechado</h3><p>Baixe os lembretes e abra o arquivo no celular. Todos os remédios entram de uma vez na agenda (Google Agenda, Calendário do iPhone ou outra), com aviso na hora.</p><div class="row"><button class="pri" id="ics">📅 Salvar lembretes na agenda do celular</button><button data-tab="pr">🖨 Imprimir a programação</button></div><p class="note" id="icsm" role="status"></p></div>
+<h3>Repetição de cada remédio</h3><div id="agr"></div>
+<h3 style="margin-top:12px">Próximos 8 dias</h3><div id="agl"></div></section>
+<section class="panel" id="es" aria-label="Estoque e reposição"><h2>Estoque e reposição</h2>
+<p class="note">O estoque só diminui quando alguém marca “Tomei”. Compras e correções ficam no histórico e a receita não muda.</p><div id="esl"></div></section>
+<section class="panel" id="pf" aria-label="Área profissional"><h2>Área profissional</h2>
+<p class="note">Para profissionais de saúde e para quem mantém a ferramenta. Não faz parte do uso diário.</p>
+<details><summary>Orientações de utilização</summary><ul><li>Ferramenta educativa: não prescreve, não altera dose e não substitui a orientação do profissional.</li><li>Cadastre exatamente o que está na receita e revise a lista a cada consulta.</li><li>Use o ensinar de volta: peça que a pessoa explique como vai tomar os remédios.</li><li>Acompanhe a adesão no resumo de 7 dias e no histórico de 28 dias (Cuidador, Histórico).</li></ul></details>
+<details><summary>Informações técnicas</summary><ul><li>Aplicativo web em arquivo único (HTML, CSS e JavaScript), sem servidor.</li><li>Os dados ficam no navegador do aparelho (chaves rr_m, rr_l, rr_s, rr_p, rr_pin). Não há backup automático.</li><li>Lembretes para a agenda do celular são gerados em arquivo .ics, com repetição e aviso na hora.</li><li>O link de compartilhamento leva nome, contatos de emergência e remédios (sem fotos).</li></ul></details>
+<details><summary>Limitações conhecidas</summary><ul><li>O alarme do aplicativo só toca com a página aberta; o som depende do aparelho, das permissões e do modo silencioso.</li><li>O arquivo .ics depende do navegador e do celular para baixar e abrir; teste antes de usar com pacientes.</li><li>O botão Emergência abre a ligação, mas a pessoa precisa confirmar a chamada.</li><li>O PIN do modo simples evita toque acidental, mas não é segurança forte.</li><li>Sem backup e sem cópia entre aparelhos.</li><li>Ainda não testado em todos os aparelhos e leitores de tela.</li></ul></details>
+<details><summary>Como testar os recursos</summary><ol><li>Cadastrar remédio com frequência de 8 em 8 horas e conferir os horários gerados.</li><li>Conferir a agenda dos próximos 8 dias e as datas de início e término.</li><li>Marcar “Tomei”, desfazer, e conferir o estoque, a compra e a correção.</li><li>Cadastrar contato de emergência e tocar em Emergência.</li><li>Salvar lembretes na agenda do celular e abrir o arquivo.</li><li>Modo simples: criar PIN, errar o PIN, sair com PIN e usar o código de recuperação.</li><li>Letra no máximo, os três temas e a impressão do relógio e da folha semanal.</li></ol></details>
+<details><summary>Segurança e acessibilidade</summary><ul><li>Letra de 16 a 36 px, temas claro, escuro e alto contraste, botões grandes, voz, vibração e teclado.</li><li>Nenhuma informação depende só da cor.</li><li>Dados de saúde ficam só no aparelho; link e impressão mostram nome e remédios, então envie só a quem precisa.</li></ul></details>
+</section>
+<section class="panel" id="rem" aria-label="Cuidador"><h2>Área do cuidador</h2>
+<div class="seg2" role="group" aria-label="Seções do cuidador"><button data-sub="pe" aria-pressed="false">👤 Pessoa</button><button data-sub="re" aria-pressed="true">💊 Remédios</button><button data-sub="hi" aria-pressed="false">📅 Histórico</button></div>
+<div id="sub-pe" hidden>
+<div class="step"><h3><span>1</span> Quem usa o aplicativo?</h3>
+<label for="pn">Nome (como a pessoa gosta de ser chamada)</label><input type="text" id="pn" autocomplete="off" placeholder="Ex.: Dona Maria">
+<label for="pav">Foto (opcional)</label><div class="row"><div id="avp" class="av" aria-hidden="true">🙂</div><input type="file" id="pav" accept="image/*"><button class="sm" id="pax" hidden>Remover foto</button></div>
+<label for="pp">Profissional ou unidade de saúde</label><input type="text" id="pp" autocomplete="off"></div>
+<div class="step"><h3><span>2</span> Contatos de emergência</h3><p class="note">Aparecem no botão vermelho Emergência, com botão para ligar. O SAMU 192 sempre aparece. O celular abre a ligação e é preciso confirmar a chamada.</p><div id="emr"></div><button class="sm" id="ema">+ Adicionar contato</button></div>
+<div class="step"><h3><span>3</span> Enviar a lista para outro celular</h3><button id="shr">🔗 Gerar link</button><div id="shv" class="note" style="margin-top:8px"></div></div>
+</div>
+<div id="sub-re">
+<div id="fm">
+<div class="step"><h3><span>1</span> <span id="ft" style="all:unset">Novo remédio</span></h3>
+<label for="fn">Nome do remédio</label><input type="text" id="fn" autocomplete="off">
+<label for="fd">Quanto tomar (como na receita)</label><input type="text" id="fd" placeholder="Ex.: 1 comprimido" autocomplete="off">
+<label for="fo">Observação</label><input type="text" id="fo" placeholder="Ex.: depois do café" autocomplete="off">
+<label for="fp">Foto da caixa (ou escolha uma figura)</label>
+<div class="row"><div id="fpv" class="ph" aria-hidden="true">💊</div><div><input type="file" id="fp" accept="image/*"><div style="margin-top:6px"><button class="sm" id="fpx" hidden>Remover foto</button></div></div></div>
+<div class="chips" role="group" aria-label="Figura do remédio"><button data-ic="💊" aria-pressed="true">💊 Comprimido</button><button data-ic="🧴" aria-pressed="false">🧴 Frasco</button><button data-ic="💧" aria-pressed="false">💧 Gotas</button><button data-ic="💉" aria-pressed="false">💉 Injeção</button></div></div>
+<div class="step"><h3><span>2</span> Quando tomar?</h3>
+<label for="ffs">Primeira dose do dia às</label><input type="time" id="ffs" value="08:00">
+<p style="margin:10px 0 0"><b>De quanto em quanto tempo?</b></p>
+<div class="chips" role="group" aria-label="Intervalo"><button data-iv="4" aria-pressed="false">4 em 4 horas</button><button data-iv="6" aria-pressed="false">6 em 6 horas</button><button data-iv="8" aria-pressed="false">8 em 8 horas</button><button data-iv="12" aria-pressed="false">12 em 12 horas</button><button data-iv="24" aria-pressed="false">1 vez ao dia</button></div>
+<label for="fiv">Outro intervalo, em horas (1 a 24)</label><input type="number" id="fiv" min="1" max="24" step="1" style="max-width:160px">
+<fieldset><legend>Horários</legend><div id="fts"></div><button class="sm" id="fta">+ Adicionar horário</button></fieldset>
+<p style="margin:10px 0 0"><b>Em quais dias?</b></p>
+<div class="chips" role="group" aria-label="Dias"><button data-dp="all">Todos os dias</button><button data-dp="wk">Segunda a sexta</button><button data-dp="we">Fim de semana</button></div>
+<fieldset><legend>Ou escolha os dias</legend><div class="days" id="fdy"></div></fieldset></div>
+<div class="step"><h3><span>3</span> Por quanto tempo?</h3>
+<div class="chips" role="group" aria-label="Duração"><button data-du="0">Uso contínuo</button><button data-du="3">3 dias</button><button data-du="5">5 dias</button><button data-du="7">7 dias</button><button data-du="10">10 dias</button><button data-du="14">14 dias</button><button data-du="30">30 dias</button></div>
+<div class="date-fields"><div><label for="fds">Data de início (opcional)</label><input type="date" id="fds"></div><div><label for="fde">Data de término (opcional)</label><input type="date" id="fde"></div></div></div>
+<div class="step"><h3><span>4</span> Estoque (opcional)</h3>
+<label for="fu">Unidades por dose (1 comprimido = 1; meio = 0,5)</label><input type="number" id="fu" value="1" min="0.25" step="any" style="max-width:200px">
+<div id="fqg"><label for="fq">Quantidade que você tem agora</label><input type="number" id="fq" min="0" step="any" style="max-width:200px"></div></div>
+<div class="err" id="ferr" role="alert" hidden></div>
+<div class="row"><button class="pri" id="fsv">Salvar remédio</button><button id="fcn" hidden>Cancelar edição</button></div>
+<p class="note">Cadastre exatamente o que está na receita. Este aplicativo não receita nem muda doses.</p>
+</div>
+<h2 style="margin-top:16px">Remédios cadastrados</h2><div id="mls"></div>
+</div>
+<div id="sub-hi" hidden><h2>Histórico dos últimos 28 dias</h2><p class="note">✔ tomou tudo · ◐ tomou parte · ✖ não tomou · · sem remédio</p><div class="hist" id="hist"></div><h3>Registros recentes</h3><div id="rlg"></div></div>
+</section>
+
+<section class="panel" id="pr" aria-label="Imprimir">
+<div class="noprint">
+<h2>Imprimir meu relógio</h2>
+<p>A folha abaixo mostra o dia dividido em manhã, almoço, tarde e noite. Imprima e cole na geladeira ou perto dos remédios.</p>
+<label for="pm">Modelo</label><select id="pm"><option value="d">Relógio do dia (manhã, almoço, tarde, noite)</option><option value="w">Folha semanal para marcar</option></select>
+<label class="chk"><input type="checkbox" id="pfo" checked> Incluir fotos</label>
+<label class="chk"><input type="checkbox" id="pxl"> Letra extra grande</label>
+<button class="pri" id="pbt">🖨 Imprimir relógio</button>
+<p class="note" style="margin-top:8px">Se a impressão não abrir, use o menu do navegador: imprimir ou compartilhar.</p>
+</div>
+<div id="sheet" class="box"></div>
+</section>
+
+<section class="panel" id="cu" aria-label="Guia"><h2>Como funciona</h2>
+<div class="box"><h3>1. Cadastre a pessoa</h3><p>Em <b>Cuidador</b>, aba Pessoa: nome, foto e contatos de emergência.</p></div>
+<div class="box"><h3>2. Cadastre os remédios</h3><p>Aba Remédios: copie da receita o nome e a dose. Escolha de quanto em quanto tempo toma (4, 6, 8 ou 12 horas), os dias e por quantos dias.</p></div>
+<div class="box"><h3>3. Veja o dia</h3><p>Em <b>Meus medicamentos</b> aparece o próximo remédio. A pessoa toca em <b>Já tomei!</b>. Se esquecer, o item fica como Atrasado.</p></div>
+<div class="box"><h3>4. Ative os alarmes</h3><p>Toque em <b>Ativar alarmes</b>. Eles tocam com a página aberta. Para tocar com o app fechado, vá em <b>Agenda</b> e toque em <b>Salvar lembretes na agenda do celular</b>.</p></div>
+<div class="box"><h3>5. Acompanhe o estoque</h3><p>Em <b>Estoque</b> veja quanto resta. Registre compras e corrija perdas.</p></div>
+<div class="box"><h3>6. Para o idoso usar sozinho</h3><p>Em Acessibilidade, ligue o <b>modo simples</b> e crie o PIN. Só o cuidador consegue sair.</p></div>
+<div class="box"><h3>Se algo não funcionar</h3><ul><li>Alarme não tocou: confira se a página estava aberta, o som e o modo silencioso.</li><li>Arquivo da agenda não baixou: abra o site direto no navegador do celular.</li><li>Esqueceu o PIN: use o código de recuperação.</li><li>Dados sumiram: limpar os dados do navegador apaga tudo, não há backup.</li></ul></div>
+<div class="box"><h3>Limites</h3><ul><li>Não receita nem altera doses. Siga sempre a receita.</li><li>Dose esquecida: não dobre. Pergunte ao profissional ou veja a bula.</li><li>Falta de ar, inchaço no rosto ou desmaio depois de um remédio: ligue 192 (SAMU).</li><li>Use também o alarme do celular para remédio que não pode falhar.</li></ul></div>
+</section>
+<section class="panel" id="ac" aria-label="Acessibilidade">
+<h2>Acessibilidade</h2>
+<div class="box"><h3>Leitura</h3>
+<label for="sfs">Tamanho da letra: <span id="sfv"></span></label><input type="range" id="sfs" min="18" max="36" step="2">
+<label for="sth">Cores</label><select id="sth"><option value="auto">Automático (do aparelho)</option><option value="light">Claro</option><option value="dark">Escuro</option><option value="hc">Alto contraste</option></select>
+<label for="sfn">Tipo de letra</label><select id="sfn"><option value="hyper">Fácil de ler (Atkinson)</option><option value="simples">Simples (Verdana)</option></select>
+<label class="chk"><input type="checkbox" id="ssp"> Mais espaço entre linhas e letras</label>
+<label class="chk"><input type="checkbox" id="sbg"> Botões extra grandes</label>
+<label class="chk"><input type="checkbox" id="smo"> Reduzir movimento</label>
+<label class="chk"><input type="checkbox" id="sms"> Modo simples para o idoso (mostra só os remédios de hoje)</label>
+</div>
+<div class="box"><h3>Alarme</h3>
+<label class="chk"><input type="checkbox" id="ssn"> Som</label>
+<label for="svl">Volume do alarme</label><input type="range" id="svl" min="0.1" max="1" step="0.1">
+<label class="chk"><input type="checkbox" id="svz"> Ler o nome do remédio em voz alta</label>
+<label class="chk"><input type="checkbox" id="svb"> Vibrar (se o aparelho permitir)</label>
+<button id="tst2">Testar alarme</button>
+</div>
+<div class="box"><h3>Teclado e leitores de tela</h3><p>Todos os botões funcionam com Tab, Enter e Espaço. Os avisos são lidos por leitores de tela. Nenhuma informação depende só da cor.</p></div>
+<div class="box"><h3>Seus dados</h3><p>Nomes, horários e fotos ficam salvos somente neste aparelho e neste navegador. Nada é enviado pela internet. Limpar os dados do navegador apaga tudo.</p></div>
+</section>
+</main>
+
+<div id="embar"><button class="em" id="emb">🚨 Precisando de ajuda? Ligar para o cuidador</button></div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ld=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
+const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){$('#warn').hidden=false;return false}};
+const p2=n=>String(n).padStart(2,'0'),dk=d=>d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate()),hm=d=>p2(d.getHours())+':'+p2(d.getMinutes());
+const DN=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+let meds=ld('rr_m',[]),log=ld('rr_l',{}),S=Object.assign({fs:24,theme:'auto',font:'hyper',sp:false,big:true,ms:false,mo:false,snd:true,vol:.7,voz:true,vib:true},ld('rr_s',{}));
+const lim=dk(new Date(Date.now()-60*864e5));Object.keys(log).forEach(k=>{if(k<lim)delete log[k]});
+const live=m=>{const l=$('#live');l.textContent='';setTimeout(()=>l.textContent=m,60)};
+
+/* tabs */
+function go(t){$$('[data-tab]').forEach(b=>{if(b.dataset.tab===t)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});$$('.panel').forEach(p=>p.classList.toggle('show',p.id===t));if(t==='pr')rp();if(t==='hoje')rt();if(t==='ag')rag();if(t==='es')re();window.scrollTo(0,0)}
+$$('[data-tab]').forEach(b=>b.onclick=()=>go(b.dataset.tab));
+
+/* settings */
+function ap(){const r=document.documentElement;r.style.setProperty('--fs',S.fs+'px');if(S.theme==='auto')r.removeAttribute('data-theme');else r.dataset.theme=S.theme;r.classList.toggle('simple',S.font==='simples');r.classList.toggle('sp',S.sp);r.classList.toggle('big',S.big);r.classList.toggle('nomo',S.mo);r.classList.toggle('ms',S.ms);
+$('#sfs').value=S.fs;$('#sfv').textContent=S.fs+' px';$('#sth').value=S.theme;$('#sfn').value=S.font;$('#ssp').checked=S.sp;$('#sbg').checked=S.big;$('#smo').checked=S.mo;$('#sms').checked=S.ms;$('#ssn').checked=S.snd;$('#svl').value=S.vol;$('#svz').checked=S.voz;$('#svb').checked=S.vib}
+const bind=(id,k,ty)=>$(id).addEventListener('input',e=>{S[k]=ty==='n'?+e.target.value:ty==='b'?e.target.checked:e.target.value;sv('rr_s',S);ap()});
+bind('#sfs','fs','n');bind('#sth','theme');bind('#sfn','font');bind('#ssp','sp','b');bind('#sbg','big','b');bind('#smo','mo','b');bind('#ssn','snd','b');bind('#svl','vol','n');bind('#svz','voz','b');bind('#svb','vib','b');
+
+/* doses */
+function doses(d){d=d||new Date();const w=d.getDay(),k=dk(d),o=[];meds.forEach(m=>{if(!m.days.includes(w)||(m.ds&&k<m.ds)||(m.de&&k>m.de))return;m.times.forEach(t=>{const key=m.id+'|'+t;o.push({m,t,key,taken:(log[k]||{})[key]})})});return o.sort((a,b)=>a.t.localeCompare(b.t))}
+const img=(m,c)=>m.photo?`<img class="ph" src="${m.photo}" alt="Foto de ${esc(m.name)}">`:`<div class="ph" aria-hidden="true">${esc(m.ic||'💊')}</div>`;
+function take(key,v){const k=dk(new Date());log[k]=log[k]||{};const had=!!log[k][key];if(v)log[k][key]=Date.now();else delete log[k][key];if(had!==!!v){const m=meds.find(z=>z.id===key.split('|')[0]);if(m&&m.q0!=null){m.used=Math.max(0,(m.used||0)+(v?1:-1)*(m.u||1));sv('rr_m',meds)}}sv('rr_l',log);delete snooze[key];rt()}
+function until(t){const n=new Date(),[h,m]=t.split(':').map(Number),d=(h*60+m)-(n.getHours()*60+n.getMinutes());if(d<0)return 'Atrasado há '+fm(-d);if(d===0)return 'Agora';return 'Faltam '+fm(d)}
+const fm=d=>d>=60?Math.floor(d/60)+' h'+(d%60?' '+d%60+' min':''):d+' min';
+let TF='all';const tfOk=x=>TF==='all'||(TF==='m'&&per(x.t)==='m')||(TF==='t'&&(per(x.t)==='a'||per(x.t)==='t'))||(TF==='n'&&per(x.t)==='n');
+function ana(){const n=new Date(),s=n.getSeconds(),mi=n.getMinutes()+s/60,hh=n.getHours()%12+mi/60,r=(id,a)=>{const e=$(id);if(e)e.setAttribute('transform','rotate('+a+' 50 50)')};r('#ah',hh*30);r('#am',mi*6);r('#as',s*6)}
+function dst(d){let a=0,b=0;doses(d).forEach(x=>{const[hh,mi]=x.t.split(':').map(Number),s=new Date(d.getFullYear(),d.getMonth(),d.getDate(),hh,mi).getTime(),c=+x.m.id.slice(1,14);if(c>s)return;if(s>Date.now()&&!x.taken)return;b++;if(x.taken)a++});return[a,b]}
+function rhd(){const n=new Date(),g=n.getHours()<12?'Bom dia':n.getHours()<18?'Boa tarde':'Boa noite';$('#hi').innerHTML='Olá'+(pat.n?', '+esc(pat.n):'')+'!<br><small>'+g+'.</small>';const a=pat.f?`<img src="${pat.f}" alt="Foto de ${esc(pat.n)}">`:'🙂';$('#av').innerHTML=a;$('#avp').innerHTML=a;$('#pax').hidden=!pat.f;$('#ck').textContent=hm(n);$('#cd2').textContent=n.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});ana()}
+function rt(){const n=new Date(),h=hm(n),L=doses(n),P=L.filter(x=>!x.taken),hero=$('#hero'),nx=P[0];
+hero.innerHTML=!meds.length?'<div class="box"><h2>Nenhum remédio cadastrado</h2><p>Peça ao cuidador para cadastrar em Cuidador.</p></div>':!L.length?'<div class="box"><h2>Nenhum remédio para hoje</h2></div>':!P.length?`<div class="box ok-card" id="okc"><div class="stars" aria-hidden="true">⭐⭐⭐</div><h2>Muito bem${pat.n?', '+esc(pat.n):''}!</h2><p>Você tomou todos os remédios de hoje!</p><button class="pri" id="cel">🎉 Celebrar!</button></div>`:`<div class="box hero ${nx.t<h?'late':''}"><p class="eyebrow">🔔 Hora do remédio</p><p><span class="tag ${nx.t<h?'late':'wait'}">${nx.t<h?'⚠ Atrasado':'⏳ Próximo'}</span> ${until(nx.t)}</p><div class="row">${img(nx.m)}<div class="grow"><div class="tm">${nx.t}</div><h2 style="margin:0">${esc(nx.m.name)}</h2><p style="margin:0">${esc(nx.m.dose)} ${esc(nx.m.note)}</p></div></div><div class="row acts"><button class="go" data-t="${esc(nx.key)}" aria-label="Confirmar que tomou o remédio ${esc(nx.m.name)} das ${nx.t}">✅ Já tomei!</button><button class="orb" data-sn="${esc(nx.key)}">⏰ Adiar 10 minutos</button><button class="sm" data-s="${esc(nx.m.id)}">🔊 Ouvir</button></div></div>`;
+$('#lst').innerHTML=L.length?L.filter(tfOk).map(x=>{const late=!x.taken&&x.t<h,isn=nx&&x.key===nx.key,st=x.taken?'ok':late?'late':isn?'nx':'',tag=x.taken?'✔ Tomado às '+hm(new Date(x.taken)):late?'⚠ Atrasado':isn?'⏳ Pendente':'📅 Agendado';return `<div class="tl ${st}"><div class="tlc"><div class="row sp2"><div class="row">${img(x.m)}<div><b class="tm" style="font-size:1.3em">${x.t}</b> <span class="tag ${x.taken?'ok':late?'late':'wait'}">${tag}</span><h3 style="margin:2px 0 0">${esc(x.m.name)}</h3><span class="note">${esc(x.m.dose)} ${esc(x.m.note)}</span></div></div>${x.taken?`<button class="sm" data-u="${esc(x.key)}">Desfazer</button>`:`<button class="sm" data-t="${esc(x.key)}">Tomei</button>`}</div></div></div>`}).join('')+(nx?`<div class="pill">Próximo: ${nx.t} ⏳</div>`:''):'<p class="note">Nada para hoje.</p>';if(L.length&&!L.some(tfOk))$('#lst').innerHTML='<p class="note">Nenhum remédio neste turno.</p>';
+$$('[data-t]').forEach(b=>b.onclick=()=>{take(b.dataset.t,1);live('Marcado como tomado')});$$('[data-u]').forEach(b=>b.onclick=()=>take(b.dataset.u,0));
+$$('[data-sn]').forEach(b=>b.onclick=()=>{snooze[b.dataset.sn]=Date.now()+600000;live('Lembrete em 10 minutos')});
+$$('[data-s]').forEach(b=>b.onclick=()=>{const m=meds.find(z=>z.id===b.dataset.s);if(m)say(m.name+'. '+m.dose+'. '+m.note,1)});
+const c=$('#cel');if(c)c.onclick=()=>{$('#okc').classList.add('party');say('Muito bem'+(pat.n?', '+pat.n:'')+'! Você tomou todos os remédios de hoje.',1)};
+ra();lowb();rhd();rh()}
+
+/* alarm */
+let ac,ring=null,snooze={},fired={},ti,tv,wl,active=false;
+function ensureAc(){try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume()}catch(e){}}
+function beep(){if(!S.snd||!ac)return;[0,.4,.8].forEach(o=>{const t=ac.currentTime+o,os=ac.createOscillator(),g=ac.createGain();os.frequency.value=880;g.gain.setValueAtTime(S.vol,t);g.gain.exponentialRampToValueAtTime(.001,t+.3);os.connect(g);g.connect(ac.destination);os.start(t);os.stop(t+.3)})}
+function say(m,f){if(!(S.voz||f)||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(m);u.lang='pt-BR';u.rate=.9;speechSynthesis.speak(u)}catch(e){}}
+function startRing(x){ring=x;const m=x.m;$('#alh').textContent=x.t;$('#aln').textContent=m.name;$('#ald').textContent=(m.dose+' '+m.note).trim();$('#alph').innerHTML=img(m);$('#al').classList.add('on');$('#alok').focus();
+const msg='Hora de tomar '+m.name+'. '+m.dose+'. '+m.note;beep();say(msg);if(S.vib&&navigator.vibrate)try{navigator.vibrate([400,200,400])}catch(e){}
+try{if('Notification' in window&&Notification.permission==='granted')new Notification('Hora do remédio',{body:m.name+' '+m.dose})}catch(e){}
+ti=setInterval(()=>{beep();if(S.vib&&navigator.vibrate)try{navigator.vibrate([400,200,400])}catch(e){}},3000);tv=setInterval(()=>say(msg),15000)}
+function stopRing(){clearInterval(ti);clearInterval(tv);ring=null;$('#al').classList.remove('on');try{speechSynthesis.cancel()}catch(e){}}
+$('#alok').onclick=()=>{const x=ring;stopRing();if(x&&!x.test){take(x.key,1);live('Marcado como tomado')}};
+$('#alsn').onclick=()=>{const x=ring;stopRing();if(x&&!x.test){snooze[x.key]=Date.now()+600000;live('Lembrete em 10 minutos')}};
+const test=()=>{ensureAc();if(!ring)startRing({m:{name:'Remédio de teste',dose:'1 comprimido',note:'',photo:''},t:hm(new Date()),key:'test',test:true})};
+$('#tst').onclick=test;$('#tst2').onclick=test;
+$('#act').onclick=async()=>{ensureAc();try{if('Notification' in window&&Notification.permission==='default')await Notification.requestPermission()}catch(e){}
+try{wl=await navigator.wakeLock.request('screen')}catch(e){}active=true;$('#ast').textContent='🔔 Alarmes ativos. Mantenha esta página aberta.';$('#act').textContent='Alarmes ativos ✔';live('Alarmes ativos')};
+document.addEventListener('visibilitychange',()=>{if(active&&document.visibilityState==='visible'&&navigator.wakeLock)navigator.wakeLock.request('screen').then(w=>wl=w).catch(()=>{})});
+document.addEventListener('click',ensureAc,{once:true});
+let cd=dk(new Date()),lh=hm(new Date());
+setInterval(()=>{const n=new Date(),k=dk(n),h=hm(n);if(k!==cd){cd=k;fired={};rt()}if(h!==lh){lh=h;rt();if(!$('#pr').classList.contains('show'))0}
+if(!ring)for(const x of doses(n)){if(x.taken)continue;const s=snooze[x.key],due=s?Date.now()>=s:(x.t===h&&!fired[k+x.key]);if(due){fired[k+x.key]=1;delete snooze[x.key];startRing(x);break}}},1000);
+
+/* form */
+let ed=null,ft=['08:00'],fph='',fic='💊',ivh=0;
+const gen=(first,iv)=>{const[hh,mm]=first.split(':').map(Number),o=[],s=hh*60+mm;for(let i=0;i*iv*60<1440;i++){const x=(s+i*iv*60)%1440;o.push(p2(Math.floor(x/60))+':'+p2(x%60))}return[...new Set(o)].sort()};
+const addd=(s,n)=>{const[y,m,d]=s.split('-').map(Number);return dk(new Date(y,m-1,d+n))};
+function rf(){$('#fts').innerHTML=ft.map((t,i)=>`<div class="row" style="margin:6px 0"><input type="time" value="${t}" data-i="${i}" aria-label="Horário ${i+1}">${ft.length>1?`<button class="sm bad" data-x="${i}" aria-label="Remover horário ${t}">Remover</button>`:''}</div>`).join('');
+$$('#fts [data-i]').forEach(i=>i.oninput=()=>ft[i.dataset.i]=i.value);$$('#fts [data-x]').forEach(b=>b.onclick=()=>{ft.splice(b.dataset.x,1);ivh=0;rf()});
+$('#fpv').innerHTML=fph?`<img src="${fph}" alt="Foto escolhida" style="width:100%;height:100%;object-fit:cover;border-radius:11px">`:esc(fic);$('#fpx').hidden=!fph;
+$$('[data-iv]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.iv===ivh)));$$('[data-ic]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.ic===fic)))}
+$('#fdy').innerHTML=DN.map((d,i)=>`<label class="chk"><input type="checkbox" data-d="${i}" checked> ${d}</label>`).join('');
+const setIv=v=>{ivh=v;ft=gen($('#ffs').value||'08:00',v);rf()};
+$$('[data-iv]').forEach(b=>b.onclick=()=>{$('#fiv').value='';setIv(+b.dataset.iv)});
+$('#fiv').oninput=()=>{const v=+$('#fiv').value;if(v>=1&&v<=24)setIv(Math.round(v))};
+$('#ffs').oninput=()=>{if(ivh)setIv(ivh)};
+$$('[data-ic]').forEach(b=>b.onclick=()=>{fic=b.dataset.ic;rf()});
+$$('[data-dp]').forEach(b=>b.onclick=()=>{const s={all:[0,1,2,3,4,5,6],wk:[1,2,3,4,5],we:[0,6]}[b.dataset.dp];$$('[data-d]').forEach(c=>c.checked=s.includes(+c.dataset.d))});
+$$('[data-du]').forEach(b=>b.onclick=()=>{const n=+b.dataset.du;if(!n){$('#fde').value='';live('Uso contínuo');return}if(!$('#fds').value)$('#fds').value=dk(new Date());$('#fde').value=addd($('#fds').value,n-1);live('Termina em '+$('#fde').value.split('-').reverse().join('/'))});
+$('#fta').onclick=()=>{ft.push('12:00');ivh=0;rf()};
+$('#fpx').onclick=()=>{fph='';$('#fp').value='';rf()};
+const rz=(f,mx,cb)=>{const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const s=Math.min(1,mx/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);cb(c.toDataURL('image/jpeg',.72))};im.onerror=()=>{$('#ferr').hidden=false;$('#ferr').textContent='Não foi possível ler essa foto. Tente outra.'};im.src=u};
+$('#fp').onchange=e=>{const f=e.target.files[0];if(f)rz(f,360,d=>{fph=d;rf()})};
+function clr(){ed=null;ivh=0;fic='💊';$('#fiv').value='';$('#ffs').value='08:00';$('#fds').value=$('#fde').value='';$('#fqg').hidden=false;$('#fu').value=1;$('#fq').value='';ft=['08:00'];fph='';$('#fn').value=$('#fd').value=$('#fo').value='';$('#fp').value='';$$('[data-d]').forEach(c=>c.checked=true);$('#ft').textContent='Novo remédio';$('#fcn').hidden=true;$('#ferr').hidden=true;rf()}
+$('#fcn').onclick=clr;
+$('#fsv').onclick=()=>{const e=$('#ferr'),name=$('#fn').value.trim(),days=$$('[data-d]:checked').map(c=>+c.dataset.d),times=[...new Set(ft.filter(Boolean))].sort();
+const dsv=$('#fds').value,dev=$('#fde').value;if(dsv&&dev&&dev<dsv){e.hidden=false;e.textContent='A data de término vem antes da data de início.';$('#fde').focus();return}
+if(!name||!times.length||!days.length){e.hidden=false;e.textContent=!name?'Escreva o nome do remédio.':!times.length?'Escolha pelo menos um horário.':'Escolha pelo menos um dia da semana.';(!name?$('#fn'):e).focus();return}
+e.hidden=true;const old=meds.find(z=>z.id===ed)||{},q=$('#fq').value;const o={id:ed||('m'+Date.now()),name,dose:$('#fd').value.trim(),note:$('#fo').value.trim(),photo:fph,ic:fic,times,days,u:+$('#fu').value>0?+$('#fu').value:1,q0:ed?(old.q0==null?null:old.q0):(q===''?null:+q),used:old.used||0,rep:old.rep||[],ds:dsv,de:dev};
+if(ed)meds=meds.map(m=>m.id===ed?o:m);else meds.push(o);sv('rr_m',meds);clr();rm();rt();live('Remédio salvo')};
+const dtx=m=>{const f=s=>s.split('-').reverse().join('/');return m.ds&&m.de?' · de '+f(m.ds)+' até '+f(m.de):m.ds?' · a partir de '+f(m.ds):m.de?' · até '+f(m.de):''};
+function rm(){$('#mls').innerHTML=meds.length?meds.map(m=>`<div class="box"><div class="row">${img(m)}<div class="grow"><h3>${esc(m.name)}</h3><p style="margin:0">${esc(m.dose)} ${esc(m.note)}</p><p class="note" style="margin:0">${m.times.join(', ')} · ${m.days.length===7?'todos os dias':m.days.map(d=>DN[d]).join(', ')}${dtx(m)}</p></div></div><div class="row" style="margin-top:10px"><button class="sm" data-e="${m.id}">Editar</button><button class="sm bad" data-r="${m.id}">Remover</button></div></div>`).join(''):'<p class="note">Nenhum remédio cadastrado.</p>';
+$$('[data-e]').forEach(b=>b.onclick=()=>{const m=meds.find(z=>z.id===b.dataset.e);ed=m.id;ivh=0;fic=m.ic||'💊';$('#fds').value=m.ds||'';$('#fde').value=m.de||'';$('#fqg').hidden=true;$('#fu').value=m.u||1;ft=[...m.times];fph=m.photo||'';$('#fn').value=m.name;$('#fd').value=m.dose;$('#fo').value=m.note;$$('[data-d]').forEach(c=>c.checked=m.days.includes(+c.dataset.d));$('#ft').textContent='Editar remédio';$('#fcn').hidden=false;sub('re');rf();$('#fm').scrollIntoView();$('#fn').focus()});
+$$('[data-r]').forEach(b=>b.onclick=()=>{if(b.dataset.c){meds=meds.filter(m=>m.id!==b.dataset.r);sv('rr_m',meds);rm();rt();live('Remédio removido')}else{b.dataset.c=1;b.textContent='Confirmar remoção'}});re();rh()}
+
+/* estoque */
+const sOf=m=>m.q0+(m.rep||[]).reduce((a,r)=>a+r.q,0)-(m.used||0);
+const dpd=m=>{let n=0;for(let i=0;i<7;i++)if(m.days.includes(i))n+=m.times.length;return n/7*(m.u||1)};
+const dleft=m=>{const p=dpd(m);return p?Math.floor(sOf(m)/p):null};
+const fd8=s=>s.split('-').reverse().join('/');
+function ecard(m){const s=sOf(m),dd=dleft(m),low=dd!==null&&dd<=7,tot=m.q0+(m.rep||[]).filter(r=>r.k==='compra').reduce((a,r)=>a+r.q,0),pc=tot>0?Math.max(0,Math.min(100,s/tot*100)):0,end=dd!==null?new Date(Date.now()+Math.max(0,dd)*864e5):null,td=dk(new Date()),hs=(m.rep||[]).slice().reverse().map(r=>`<li>${fd8(r.d)}: ${r.k==='ajuste'?'correção '+(r.q>0?'+':'')+(+r.q.toFixed(1)):'compra +'+(+r.q.toFixed(1))}</li>`).join('');
+return `<div class="box"><div class="row">${img(m)}<div class="grow"><h3>${esc(m.name)}</h3><div class="big2">${+s.toFixed(1)} <small style="font-size:.5em">unidades</small></div><span class="tag ${low?'late':'ok'}">${low?'⚠ Estoque baixo':'✔ Estoque ok'}</span></div></div><div class="bar2 ${low?'low':''}" aria-hidden="true"><i style="width:${pc}%"></i></div><p class="note" style="margin:0 0 8px">${dd!==null?'Dura cerca de '+Math.max(0,dd)+' dia(s), até '+p2(end.getDate())+'/'+p2(end.getMonth()+1)+'. ':''}Só diminui quando alguém marca “Tomei”.</p>
+<details><summary>➕ Registrar compra</summary><label for="rq${m.id}">Quantidade comprada</label><input type="number" min="0" step="any" id="rq${m.id}" style="max-width:220px"><label for="rd${m.id}">Data da compra</label><input type="date" id="rd${m.id}" value="${td}" style="max-width:220px"><div style="margin-top:10px"><button class="pri sm" data-rp="${m.id}">Registrar compra</button></div></details>
+<details><summary>✏️ Corrigir estoque (perda ou descarte)</summary><label for="ra${m.id}">Quantidade que tem agora</label><input type="number" min="0" step="any" id="ra${m.id}" style="max-width:220px"><div style="margin-top:10px"><button class="sm" data-aj="${m.id}">Corrigir estoque</button></div></details>
+<details><summary>📜 Histórico</summary>${hs?'<ul>'+hs+'</ul>':'<p class="note">Sem compras ou correções.</p>'}</details></div>`}
+const sbox=m=>`<div class="box"><div class="row">${img(m)}<div class="grow"><h3>${esc(m.name)}</h3><p class="note" style="margin:0">Sem controle de estoque. Digite quanto tem agora para começar.</p></div></div><div class="row" style="margin-top:8px"><input type="number" min="0" step="any" id="rq${m.id}" aria-label="Quantidade atual de ${esc(m.name)}" style="max-width:200px"><button class="sm" data-sq="${m.id}">Começar controle</button></div></div>`;
+function re(){const L=meds.slice().sort((a,b)=>{const x=a.q0==null?1e9:(dleft(a)==null?1e8:dleft(a)),y=b.q0==null?1e9:(dleft(b)==null?1e8:dleft(b));return x-y}),low=meds.filter(m=>m.q0!=null&&dleft(m)!==null&&dleft(m)<=7);
+$('#esl').innerHTML=(meds.length?`<div class="box ${low.length?'hero late':''}"><b>${low.length?'⚠ '+low.length+' remédio(s) com estoque baixo':'✔ Nenhum estoque baixo'}</b></div>`:'<p class="note">Nenhum remédio cadastrado.</p>')+L.map(m=>m.q0==null?sbox(m):ecard(m)).join('');bs()}
+function bs(){$$('[data-sq]').forEach(b=>b.onclick=()=>{const m=meds.find(z=>z.id===b.dataset.sq),i=$('#rq'+m.id);if(i.value===''||+i.value<0){live('Digite a quantidade que você tem agora');i.focus();return}m.q0=+i.value;m.used=0;m.rep=[];sv('rr_m',meds);rm();rt();live('Controle de estoque iniciado')});
+$$('[data-rp]').forEach(b=>b.onclick=()=>{const m=meds.find(z=>z.id===b.dataset.rp),i=$('#rq'+m.id),v=+i.value;if(!(v>0)){live('Digite a quantidade comprada');i.focus();return}m.rep=m.rep||[];m.rep.push({d:$('#rd'+m.id).value||dk(new Date()),q:v,k:'compra'});sv('rr_m',meds);rm();rt();live('Compra registrada')});
+$$('[data-aj]').forEach(b=>b.onclick=()=>{const m=meds.find(z=>z.id===b.dataset.aj),i=$('#ra'+m.id);if(i.value===''||+i.value<0){live('Digite quanto você tem agora');i.focus();return}m.rep=m.rep||[];m.rep.push({d:dk(new Date()),q:+i.value-sOf(m),k:'ajuste'});sv('rr_m',meds);rm();rt();live('Estoque corrigido')})}
+function lowb(){const l=meds.filter(m=>m.q0!=null&&dleft(m)!==null&&dleft(m)<=7);if(l.length)$('#hero').insertAdjacentHTML('beforeend','<div class="err" role="alert"><b>⚠ Estoque baixo:</b> '+l.map(m=>esc(m.name)).join(', ')+'. Avise o cuidador para repor.</div>')}
+
+/* agenda, histórico, registros */
+function rag(){const n=new Date(),o=[];for(let i=0;i<8;i++){const d=new Date(n.getFullYear(),n.getMonth(),n.getDate()+i),L=doses(d);o.push(`<div class="box"><h3>${i===0?'Hoje':i===1?'Amanhã':DN[d.getDay()]} · ${p2(d.getDate())}/${p2(d.getMonth()+1)}</h3>${L.length?L.map(x=>`<div class="row sp2"><span><b>${x.t}</b> ${esc(x.m.name)} <span class="note">${esc(x.m.dose)}</span></span>${i===0?`<span class="tag ${x.taken?'ok':x.t<hm(n)?'late':'wait'}">${x.taken?'✔ Tomado':x.t<hm(n)?'⚠ Atrasado':'⏳ Aguardando'}</span>`:''}</div>`).join(''):'<p class="note" style="margin:0">Nenhum remédio</p>'}</div>`)}
+$('#agl').innerHTML=o.join('');const rc=meds.map(m=>`<li>${esc(m.name)}: ${m.times.join(', ')} · ${m.days.length===7?'todos os dias':m.days.map(d=>DN[d]).join(', ')}${dtx(m)}</li>`).join('');$('#agr').innerHTML=rc?'<ul>'+rc+'</ul>':'<p class="note">Nenhum remédio cadastrado.</p>';
+const np='Notification' in window?{granted:'autorizadas',denied:'bloqueadas',default:'ainda não autorizadas'}[Notification.permission]:'não disponíveis neste aparelho';
+$('#ags').innerHTML='<p><b>Alarme do aplicativo:</b> ✔ toca com esta página aberta e o som ligado.</p><p style="margin:0"><b>Notificações do navegador:</b> '+np+'.</p>'}
+function rh(){const t=new Date(),d0=new Date(t.getFullYear(),t.getMonth(),t.getDate()-27),o=DN.map(d=>`<div class="h">${d}</div>`);for(let i=0;i<d0.getDay();i++)o.push('<div class="h"></div>');for(let i=0;i<28;i++){const d=new Date(d0.getFullYear(),d0.getMonth(),d0.getDate()+i),[a,b]=dst(d),c=b?(a===b?'g':a?'y':'r'):'',s=b?(a===b?'✔':a?'◐':'✖'):'·';o.push(`<div class="${c}${i===27?' t':''}"><b>${d.getDate()}</b><br>${s}</div>`)}$('#hist').innerHTML=o.join('');rl()}
+function rl(){const o=[];Object.keys(log).sort().reverse().slice(0,7).forEach(k=>{Object.entries(log[k]).sort((a,b)=>a[1]-b[1]).forEach(([key,ts])=>{const m=meds.find(z=>z.id===key.split('|')[0]);o.push(`<li>${k.slice(8)}/${k.slice(5,7)} ${hm(new Date(ts))}: ${m?esc(m.name):'(removido)'} (previsto ${key.split('|')[1]})</li>`)})});$('#rlg').innerHTML=o.length?'<ul>'+o.slice(0,40).join('')+'</ul>':'<p class="note">Nenhum uso registrado ainda.</p>'}
+function ra(){let a=0,b=0;for(let i=0;i<7;i++){const[x,y]=dst(new Date(Date.now()-i*864e5));a+=x;b+=y}$('#adh').innerHTML=b?`<h3>Últimos 7 dias</h3><p style="margin:0"><b>${a} de ${b}</b> doses tomadas (${Math.round(a/b*100)}%)</p>`:'<p class="note" style="margin:0">O resumo da semana aparece depois das primeiras doses.</p>'}
+function sub(x){['pe','re','hi'].forEach(k=>{$('#sub-'+k).hidden=k!==x});$$('[data-sub]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sub===x)));if(x==='hi')rh()}
+$$('[data-sub]').forEach(b=>b.onclick=()=>sub(b.dataset.sub));
+
+/* pessoa, emergência, link */
+let pat=Object.assign({n:'',p:'',f:'',em:[]},ld('rr_p',{}));if(!Array.isArray(pat.em))pat.em=[];
+$('#pn').value=pat.n;$('#pp').value=pat.p;
+$('#pn').oninput=e=>{pat.n=e.target.value;sv('rr_p',pat);rhd()};$('#pp').oninput=e=>{pat.p=e.target.value;sv('rr_p',pat)};
+$('#pav').onchange=e=>{const f=e.target.files[0];if(f)rz(f,160,d=>{pat.f=d;sv('rr_p',pat);rhd()})};$('#pax').onclick=()=>{pat.f='';$('#pav').value='';sv('rr_p',pat);rhd()};
+const tel=s=>String(s||'').replace(/[^\d+]/g,''),okTel=s=>{const d=tel(s).replace(/\D/g,'');return d.length>=8&&d.length<=15};
+function rem2(){$('#emr').innerHTML=pat.em.map((c,i)=>`<div class="box"><label for="en${i}">Nome</label><input type="text" id="en${i}" value="${esc(c.n)}" data-ec="${i}|n" autocomplete="off"><label for="er${i}">Parentesco (opcional)</label><input type="text" id="er${i}" value="${esc(c.r)}" data-ec="${i}|r" autocomplete="off"><label for="et${i}">Telefone com DDD</label><input type="tel" id="et${i}" inputmode="tel" value="${esc(c.t)}" data-ec="${i}|t" autocomplete="off"><button class="sm bad" data-ex="${i}" style="margin-top:8px">Remover contato</button></div>`).join('');
+$$('[data-ec]').forEach(i=>i.oninput=()=>{const[k,f]=i.dataset.ec.split('|');pat.em[k][f]=i.value;sv('rr_p',pat)});$$('[data-ex]').forEach(b=>b.onclick=()=>{pat.em.splice(b.dataset.ex,1);sv('rr_p',pat);rem2()})}
+$('#ema').onclick=()=>{if(pat.em.length>=3){live('Máximo de 3 contatos');return}pat.em.push({n:'',r:'',t:''});rem2()};
+function emo(){const c=pat.em.filter(x=>okTel(x.t));$('#eml').innerHTML=c.map(x=>`<div class="ct"><div style="font-size:2em" aria-hidden="true">👤</div><h2 style="margin:0">${esc(x.n||'Contato')}</h2><p style="margin:0">${esc(x.r||'')}</p><a class="call" href="tel:${tel(x.t)}">📞 Ligar para ${esc(x.n||'contato')}</a></div>`).join('')+'<div class="ct"><h2 style="margin:0">SAMU 192</h2><p style="margin:0">Urgência médica</p><a class="call" href="tel:192">📞 Ligar 192</a></div>'+(c.length?'':'<p>Nenhum contato cadastrado. O cuidador adiciona em Cuidador, Pessoa.</p>');$('#em').classList.add('on');$('#emx').focus()}
+$('#emb').onclick=emo;$('#emx').onclick=()=>$('#em').classList.remove('on');
+const emTxt=()=>{const c=pat.em.filter(x=>okTel(x.t)).map(x=>esc(x.n||'Contato')+' '+esc(x.t));return '<p><b>Emergência:</b> '+(c.length?c.join(' · ')+' · ':'')+'SAMU 192</p>'};
+const b64=s=>btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''),ub=s=>decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/'))));
+$('#shr').onclick=()=>{const d={p:{n:pat.n,p:pat.p,em:pat.em},m:meds.map(m=>({n:m.name,d:m.dose,o:m.note,t:m.times,y:m.days,s:m.ds,e:m.de,i:m.ic}))},u=location.origin+location.pathname+'#c'+b64(JSON.stringify(d));$('#shv').innerHTML='Copie e envie por WhatsApp (as fotos não vão no link):<br><input type="text" readonly value="'+esc(u)+'" aria-label="Link" onclick="this.select()">';if(navigator.share)navigator.share({title:'Meus remédios',url:u}).catch(()=>{});else try{navigator.clipboard.writeText(u)}catch(e){}};
+try{if(location.hash.startsWith('#c')){const d=JSON.parse(ub(location.hash.slice(2)));$('#main').insertAdjacentHTML('afterbegin',`<div class="box hero" id="imp" role="alert"><h2>Receber lista de remédios</h2><p>${esc(d.p&&d.p.n)} ${d.p&&d.p.p?'· '+esc(d.p.p):''}<br>${d.m.length} remédio(s). Isto substitui a lista atual deste aparelho.</p><button class="pri" id="impok">Aceitar lista</button> <button id="impno">Agora não</button></div>`);
+$('#impok').onclick=()=>{const dt=s=>/^\d{4}-\d\d-\d\d$/.test(s||'')?s:'';meds=d.m.map((m,i)=>({id:'m'+Date.now()+i,name:String(m.n).slice(0,80),dose:String(m.d||'').slice(0,80),note:String(m.o||'').slice(0,80),photo:'',ic:['💊','🧴','💧','💉'].includes(m.i)?m.i:'💊',times:(m.t||[]).filter(t=>/^([01]\d|2[0-3]):[0-5]\d$/.test(t)),days:(m.y||[]).filter(i=>i>=0&&i<7),ds:dt(m.s),de:dt(m.e)})).filter(m=>m.times.length&&m.days.length);
+const p=d.p||{};pat={n:String(p.n||'').slice(0,80),p:String(p.p||'').slice(0,80),f:'',em:(Array.isArray(p.em)?p.em:[]).slice(0,3).map(c=>({n:String(c.n||'').slice(0,40),r:String(c.r||'').slice(0,40),t:tel(c.t)})).filter(c=>okTel(c.t))};
+sv('rr_m',meds);sv('rr_p',pat);$('#pn').value=pat.n;$('#pp').value=pat.p;$('#imp').remove();rem2();rm();rt();live('Lista recebida')};$('#impno').onclick=()=>$('#imp').remove()}}catch(e){}
+function rw(){const en=[];meds.forEach(m=>m.times.forEach(t=>en.push({m,t})));en.sort((a,b)=>a.t.localeCompare(b.t));const c='border:3px solid;padding:6px';$('#sheet').className='box'+($('#pxl').checked?' xl':'');$('#sheet').innerHTML=`<h2>Folha semanal dos remédios</h2><p>Nome: ${esc(pat.n)||'________________________'} &nbsp; ${pat.p?'Unidade: '+esc(pat.p)+' &nbsp; ':''}Semana de ___/___ a ___/___</p>${emTxt()}<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><tr><th style="${c};text-align:left">Remédio e horário</th>${DN.map(d=>`<th style="${c}">${d}</th>`).join('')}</tr>${en.map(x=>`<tr><td style="${c}"><b>${x.t}</b> ${esc(x.m.name)}<br><small>${esc(x.m.dose)}</small></td>${DN.map((d,i)=>`<td style="${c};text-align:center;font-size:1.6em">${x.m.days.includes(i)?'☐':'–'}</td>`).join('')}</tr>`).join('')}</table></div><p class="note">Marque ☐ quando tomar. Siga sempre a receita.</p>`}
+$('#pm').onchange=rp;
+$('#rdall').onclick=()=>{const L=doses(new Date()),P=L.filter(x=>!x.taken);say(!L.length?'Hoje não há remédios.':!P.length?'Você já tomou todos os remédios de hoje.':'Hoje faltam: '+P.map(x=>'às '+x.t+', '+x.m.name+', '+x.m.dose).join('. '),1)};
+
+/* PIN do cuidador (modo simples) */
+const hx=async s=>{try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('rr1|'+s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){let h=5381;for(const c of 'rr1|'+s)h=((h<<5)+h+c.charCodeAt(0))>>>0;return 'f'+h}};
+let pm='',fl=0,lk=0;
+function pdo(m,x){pm=m;const T={set:['Criar PIN do cuidador','Escolha 4 números. Sem o PIN, ninguém sai do modo simples.'],exit:['Sair do modo simples','Digite o PIN do cuidador.'],rec:['Recuperar acesso','Digite o código de recuperação de 8 números.'],code:['Anote o código de recuperação','Código: '+x+'. Anote em papel e guarde com o cuidador. Ele não aparece de novo.']}[m],c=m==='code';
+$('#pdt').textContent=T[0];$('#pdm').textContent=T[1];$('#pi').value='';$('#pi').maxLength=m==='rec'?8:4;$('#pw').hidden=c;$('#pfg').hidden=m!=='exit';$('#pe').hidden=true;$('#pok').textContent=c?'Já anotei: ativar modo simples':'Confirmar';$('#pd').classList.add('on');(c?$('#pok'):$('#pi')).focus()}
+const pdc=()=>$('#pd').classList.remove('on');
+const setMs=v=>{S.ms=v;sv('rr_s',S);ap();go('hoje')};
+$('#pcn').onclick=()=>{pdc();ap()};$('#pfg').onclick=()=>pdo('rec');
+$('#pi').addEventListener('keydown',e=>{if(e.key==='Enter')$('#pok').click()});
+$('#pok').onclick=async()=>{const v=$('#pi').value.trim(),e=$('#pe'),er=t=>{e.textContent=t;e.hidden=false;$('#pi').focus()};
+if(pm==='code'){pdc();setMs(true);return}
+if(Date.now()<lk)return er('Aguarde '+Math.ceil((lk-Date.now())/1000)+' segundos e tente de novo.');
+if(pm==='set'){if(!/^\d{4}$/.test(v))return er('Digite exatamente 4 números.');let c;try{c=String(crypto.getRandomValues(new Uint32Array(1))[0]%9e7+1e7)}catch(x){c=String(Math.floor(1e7+Math.random()*9e7))}if(!sv('rr_pin',{p:await hx(v),r:await hx(c)}))return er('Não foi possível salvar o PIN neste navegador.');pdo('code',c);return}
+const P=ld('rr_pin',null);if(!P){pdc();setMs(false);return}
+if(await hx(v)===(pm==='rec'?P.r:P.p)){fl=0;pdc();if(pm==='rec')try{localStorage.removeItem('rr_pin')}catch(x){}setMs(false);live('Modo simples desativado');return}
+if(++fl>=5){fl=0;lk=Date.now()+30000;er('Errou 5 vezes. Aguarde 30 segundos.')}else er('PIN incorreto. Tente de novo.')};
+$('#sms').onchange=e=>{const on=e.target.checked;e.target.checked=!on;if(on){ld('rr_pin',null)?setMs(true):pdo('set')}else pdo('exit')};
+$('#sair').onclick=()=>pdo('exit');
+
+/* lembretes para a agenda do celular (.ics) */
+const RD=['SU','MO','TU','WE','TH','FR','SA'];
+const nxt=(m,t)=>{const n=new Date(),[hh,mi]=t.split(':').map(Number);let b=new Date(n.getFullYear(),n.getMonth(),n.getDate());if(m.ds){const[y,o,a]=m.ds.split('-').map(Number),z=new Date(y,o-1,a);if(z>b)b=z}let d=new Date(b.getFullYear(),b.getMonth(),b.getDate(),hh,mi);for(let i=0;i<400&&(!m.days.includes(d.getDay())||d<n);i++)d=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1,hh,mi);return d};
+const ie=s=>String(s).replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n');
+const fz=x=>x.getFullYear()+p2(x.getMonth()+1)+p2(x.getDate())+'T'+p2(x.getHours())+p2(x.getMinutes())+p2(x.getSeconds());
+function icsText(){const o=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Relogio dos Remedios//PT-BR//','CALSCALE:GREGORIAN'],st=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+Z$/,'Z');
+meds.forEach(m=>m.times.forEach(t=>{const d=nxt(m,t),e=new Date(d.getTime()+9e5);let rr='RRULE:'+(m.days.length===7?'FREQ=DAILY':'FREQ=WEEKLY;BYDAY='+m.days.map(i=>RD[i]).join(','));if(m.de){const[y,mo,da]=m.de.split('-').map(Number);rr+=';UNTIL='+fz(new Date(y,mo-1,da,23,59,59))}
+o.push('BEGIN:VEVENT','UID:'+m.id+'-'+t.replace(':','')+'@relogio-remedios','DTSTAMP:'+st,'DTSTART:'+fz(d),'DTEND:'+fz(e),rr,'SUMMARY:'+ie('💊 '+m.name),'DESCRIPTION:'+ie(('Tomar: '+m.dose+' '+m.note).trim()+'\nSiga sempre a receita.'),'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+ie(m.name),'TRIGGER:PT0S','END:VALARM','END:VEVENT')}));o.push('END:VCALENDAR');return o.join('\r\n')+'\r\n'}
+$('#ics').onclick=()=>{const m=$('#icsm');if(!meds.length){m.textContent='Cadastre um remédio primeiro.';return}try{const u=URL.createObjectURL(new Blob([icsText()],{type:'text/calendar'})),a=document.createElement('a');a.href=u;a.download='lembretes-remedios.ics';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000);m.textContent='Arquivo gerado. Abra o arquivo baixado para adicionar à agenda. Se nada baixar, abra este site direto no navegador do celular.'}catch(e){m.textContent='Não foi possível gerar o arquivo neste navegador.'}};
+
+/* impressão */
+const PER=[['m','☀️ Manhã'],['a','🍽️ Almoço'],['t','🌤️ Tarde'],['n','🌙 Noite']];
+const per=t=>{const h=+t.slice(0,2);return h>=5&&h<11?'m':h>=11&&h<15?'a':h>=15&&h<19?'t':'n'};
+function rp(){if($('#pm').value==='w')return rw();const ph=$('#pfo').checked,en=[];meds.forEach(m=>m.times.forEach(t=>en.push({m,t})));en.sort((a,b)=>a.t.localeCompare(b.t));
+$('#sheet').className='box'+($('#pxl').checked?' xl':'');
+$('#sheet').innerHTML=`<h2>Meu relógio dos remédios</h2><p>Nome: ${esc(pat.n)||'________________________'} &nbsp; ${pat.p?'Unidade: '+esc(pat.p)+' &nbsp; ':''}Data: ___/___/______</p>${emTxt()}<div class="disc">${PER.map(([k,n])=>`<div class="q ${k}"><h3>${n}</h3>${en.filter(x=>per(x.t)===k).map(x=>`<div class="it">${ph&&x.m.photo?`<img class="ph" src="${x.m.photo}" alt="">`:''}<div><b class="t">${x.t}</b> <b>${esc(x.m.name)}</b><br>${esc(x.m.dose)} ${esc(x.m.note)}${x.m.days.length<7?`<br><small>${x.m.days.map(d=>DN[d]).join(', ')}</small>`:''}</div></div>`).join('')||'<p class="note" style="margin:0">Nenhum remédio</p>'}</div>`).join('')}</div><p class="note">Impresso em ${new Date().toLocaleDateString('pt-BR')}. Siga sempre a receita. Em caso de dúvida, procure um profissional de saúde.</p>`}
+$('#pfo').onchange=rp;$('#pxl').onchange=rp;
+$('#pbt').onclick=()=>{rp();try{window.print()}catch(e){live('Use o menu do navegador para imprimir')}};
+
+$$('[data-tf]').forEach(b=>b.onclick=()=>{TF=b.dataset.tf;$$('[data-tf]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));rt()});
+ap();rf();rem2();sub('re');rm();rt();
+setInterval(()=>{$('#ck').textContent=hm(new Date());ana()},1000);
+</script>
+</body>
+</html>
